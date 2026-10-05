@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/dustinruehle/demo-studio/actions/workflows/tests.yml/badge.svg)](https://github.com/dustinruehle/demo-studio/actions/workflows/tests.yml)
 
+This is a fork of [dustinruehle/demo-studio](https://github.com/dustinruehle/demo-studio).
+
 A Claude Code plugin that turns a customer discovery call into the set of things
 you need to walk into the next meeting: a demo build spec, a deck flow guide, the
 net-new slides as a dark PPTX, and a presenter guide with a live-demo run of show.
@@ -12,7 +14,7 @@ artifact by name and skip the rest.
 ## Install
 
 ```bash
-claude plugin marketplace add dustinruehle/demo-studio
+claude plugin marketplace add anthonywittig/demo-studio
 claude plugin install demo-studio@demo-studio
 ```
 
