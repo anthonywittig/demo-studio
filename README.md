@@ -12,7 +12,7 @@ artifact by name and skip the rest.
 ## Install
 
 ```bash
-claude plugin marketplace add dustinruehle/demo-studio
+claude plugin marketplace add anthonywittig/demo-studio
 claude plugin install demo-studio@demo-studio
 ```
 
