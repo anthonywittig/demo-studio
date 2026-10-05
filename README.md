@@ -18,8 +18,9 @@ claude plugin marketplace add anthonywittig/demo-studio
 claude plugin install demo-studio@demo-studio
 ```
 
-That is all it needs. The plugin is pure Python and JavaScript with one npm
-dependency, used by a single skill.
+That is all most skills need. The plugin is pure Python and JavaScript with one npm
+dependency, used by a single skill. `create-slides` also needs Anthropic's `pptx`
+skill; see [Requirements](#requirements).
 
 ## Use it
 
@@ -78,8 +79,24 @@ violation fails a build instead of depending on anyone remembering:
 
 ## Requirements
 
-- **Python 3.9 or newer.** Standard library only, no `pip install`.
+- **Python 3.9 or newer.** The plugin's own code is standard
+  library only, no `pip install`.
 - **Node 18 or newer.** Only `create-slides` needs it, and only for `pptxgenjs`.
+- **Anthropic's `pptx` skill**, for `create-slides` only. The skill validates
+  and renders the deck with that skill's `scripts/office/` tools, and stops with
+  `could not locate the pptx skill` if it cannot find one. The Claude desktop
+  sandbox already has it. On your own machine, install it from
+  [anthropics/skills](https://github.com/anthropics/skills):
+
+  ```bash
+  git clone --depth 1 https://github.com/anthropics/skills ~/src/anthropic-skills
+  mkdir -p ~/.claude/skills
+  ln -s ~/src/anthropic-skills/skills/pptx ~/.claude/skills/pptx
+  python3 -m pip install lxml defusedxml   # its validator needs these
+  ```
+
+  Instead of the symlink, you can set `PPTX_SKILL_DIR` to the folder holding
+  its `SKILL.md`. When set, that is the only place it looks.
 - **Optional: LibreOffice and poppler**, for the visual-QA loop that renders the
   deck to images so you can look at every slide. Without them the deck still
   builds and is still checked mechanically, but the skill prints
