@@ -85,8 +85,19 @@ violation fails a build instead of depending on anyone remembering:
 - **Anthropic's `pptx` skill**, for `create-slides` only. The skill validates
   and renders the deck with that skill's `scripts/office/` tools, and stops with
   `could not locate the pptx skill` if it cannot find one. The Claude desktop
-  sandbox already has it. On your own machine, install it from
-  [anthropics/skills](https://github.com/anthropics/skills):
+  sandbox already has it. On your own machine, the easiest route is Anthropic's
+  plugin, from inside Claude Code:
+
+  ```
+  /plugin marketplace add anthropics/skills
+  /plugin install document-skills@anthropic-agent-skills
+  ```
+
+  `create-slides` finds it under `~/.claude/plugins/` with no further setup.
+  Its validator still needs `lxml` and `defusedxml`
+  (`python3 -m pip install lxml defusedxml`).
+
+  Or clone [anthropics/skills](https://github.com/anthropics/skills) yourself:
 
   ```bash
   git clone --depth 1 https://github.com/anthropics/skills ~/src/anthropic-skills
