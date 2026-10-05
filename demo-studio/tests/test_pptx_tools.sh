@@ -31,26 +31,22 @@ case "$out" in
   *) bad "failure message did not name the probed locations" ;;
 esac
 
-# 3b. a pptx skill installed as a Claude Code plugin is found without an override
+# 3b. a pptx skill synced down from the Claude app is probed without an override
 home="$(mktemp -d)"
-plug="$home/.claude/plugins/cache/anthropic-agent-skills/document-skills/1.0.0/skills/pptx"
-mkdir -p "$plug"; touch "$plug/SKILL.md"
-mkt="$home/.claude/plugins/marketplaces/anthropic-agent-skills/skills/pptx"
-mkdir -p "$mkt"; touch "$mkt/SKILL.md"
+synced="$home/.claude/skills/synced/org_id/pptx"
+mkdir -p "$synced"; touch "$synced/SKILL.md"
 # Check the probe list, not find_pptx_skill: on a machine with the sandbox copy
 # at /mnt/skills/public/pptx that one wins and would mask a missing probe.
 cands="$(unset PPTX_SKILL_DIR; HOME="$home" _pptx_candidates)"
-for want in "$plug" "$mkt"; do
-  if printf '%s\n' "$cands" | grep -qxF "$want"; then
-    ok "probes the plugin path ${want#"$home"/}"
-  else
-    bad "does not probe the plugin path ${want#"$home"/}"
-  fi
-done
+if printf '%s\n' "$cands" | grep -qxF "$synced"; then
+  ok "probes the synced Claude app skill path"
+else
+  bad "does not probe the synced Claude app skill path"
+fi
 out="$(PPTX_SKILL_DIR="$tmp/nope" find_pptx_skill 2>&1 || true)"
 case "$out" in
-  *".claude/plugins/"*) ok "failure message names the plugin paths" ;;
-  *) bad "failure message did not name the plugin paths" ;;
+  *".claude/skills/synced/"*) ok "failure message names the synced path" ;;
+  *) bad "failure message did not name the synced path" ;;
 esac
 rm -rf "$home"
 
