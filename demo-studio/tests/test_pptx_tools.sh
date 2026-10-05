@@ -31,6 +31,25 @@ case "$out" in
   *) bad "failure message did not name the probed locations" ;;
 esac
 
+# 3b. a pptx skill synced down from the Claude app is probed without an override
+home="$(mktemp -d)"
+synced="$home/.claude/skills/synced/org_id/pptx"
+mkdir -p "$synced"; touch "$synced/SKILL.md"
+# Check the probe list, not find_pptx_skill: on a machine with the sandbox copy
+# at /mnt/skills/public/pptx that one wins and would mask a missing probe.
+cands="$(unset PPTX_SKILL_DIR; HOME="$home" _pptx_candidates)"
+if printf '%s\n' "$cands" | grep -qxF "$synced"; then
+  ok "probes the synced Claude app skill path"
+else
+  bad "does not probe the synced Claude app skill path"
+fi
+out="$(PPTX_SKILL_DIR="$tmp/nope" find_pptx_skill 2>&1 || true)"
+case "$out" in
+  *".claude/skills/synced/"*) ok "failure message names the synced path" ;;
+  *) bad "failure message did not name the synced path" ;;
+esac
+rm -rf "$home"
+
 # 4. check_render_tools reports the specific missing tool
 out="$(PATH=/nonexistent check_render_tools 2>&1 || true)"
 case "$out" in

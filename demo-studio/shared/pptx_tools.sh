@@ -14,6 +14,10 @@ _pptx_candidates() {
   printf '%s\n' "/mnt/skills/public/pptx"
   printf '%s\n' "$HOME/Library/Application Support/Claude/local-agent-mode-sessions"/*/*/*/skills/pptx
   printf '%s\n' "$HOME/.claude/skills/pptx"
+  # Skills enabled in the Claude app sync down to Claude Code under
+  # skills/synced/<org>_<id>/. An unmatched glob stays literal and fails the
+  # SKILL.md check, so it costs nothing.
+  printf '%s\n' "$HOME/.claude/skills/synced"/*/pptx
 }
 
 find_pptx_skill() {
