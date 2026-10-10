@@ -20,7 +20,17 @@ const LABEL_H = 0.28; // inherited from the original label() helper
 // own standalone-use default palette reads from it rather than hardcoding a
 // second copy, so changing one value in brand.json moves it everywhere,
 // including a caller that never builds its own palette object.
-const _BRAND = require(path.join(__dirname, '..', '..', '..', 'shared', 'brand.json'));
+//
+// shared/ sits beside assets/ in every layout (a symlink in the repo, a copy
+// when a host materialises the skill on its own, possibly under a name such as
+// "demo-studio:create-slides"); the plugin root is only a fallback, since a
+// flattened install does not have one.
+const fs = require('node:fs');
+const BRAND_PATH = [
+  path.join(__dirname, '..', 'shared', 'brand.json'),
+  path.join(__dirname, '..', '..', '..', 'shared', 'brand.json'),
+].find((p) => fs.existsSync(p));
+const _BRAND = require(BRAND_PATH);
 const _PPTX = _BRAND.surfaces.pptx;
 const _nohash = (c) => String(c || '').replace(/^#/, '');
 
@@ -226,7 +236,7 @@ function renderPptx(slides, pres, palette) {
 }
 
 module.exports = {
-  LAYOUT, SCALE, LABEL_H,
+  LAYOUT, SCALE, LABEL_H, BRAND: _BRAND,
   recordSlide, bboxes, renderSvg, renderPptx,
   _internal: { hex, esc, plainText, u, renderOp, DEFAULT_PALETTE },
 };

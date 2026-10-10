@@ -15,8 +15,15 @@ mock-by-default, generic/public-safe, pinned pre-release versions.
 
 ## Quickstart (hand to a coding agent)
 
+Run it from the working directory where the output belongs, not from inside
+the skill. Set `SKILL` to this skill's base directory (the absolute path shown
+when the skill loaded) and keep it quoted: some hosts install plugin skills as
+directories named like `demo-studio:build-spec`, and the colon is harmless in a
+quoted absolute path, so there is no need to copy the skill anywhere.
+
 ```bash
-cp assets/build_spec_template.md BUILD_SPEC.md
+SKILL="/absolute/path/to/this/skill"   # its base directory, quoted
+cp "$SKILL/assets/build_spec_template.md" BUILD_SPEC.md
 # fill it in (see references/build-spec.md)
 ```
 

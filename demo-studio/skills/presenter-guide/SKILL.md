@@ -17,10 +17,17 @@ beat with the exact Ctrl-C, plus reference/switches.
 
 ## Quickstart (per-slide points / teleprompter Say / questions + demo run-of-show)
 
+Run it from the working directory where the output belongs, not from inside
+the skill. Set `SKILL` to this skill's base directory (the absolute path shown
+when the skill loaded) and keep it quoted: some hosts install plugin skills as
+directories named like `demo-studio:presenter-guide`, and the colon is harmless in a
+quoted absolute path, so there is no need to copy the skill anywhere.
+
 ```bash
-cp assets/examples/presenter_guide.example.json my_pg.json
+SKILL="/absolute/path/to/this/skill"   # its base directory, quoted
+cp "$SKILL/assets/examples/presenter_guide.example.json" my_pg.json
 # edit my_pg.json: slides[] and the optional demo{} block (see references/presenter-guide-format.md)
-python3 assets/build_presenter_guide.py my_pg.json presenter-guide.html
+python3 "$SKILL/assets/build_presenter_guide.py" my_pg.json presenter-guide.html
 ```
 
 Apply the disciplines in `shared/grounding.md`.

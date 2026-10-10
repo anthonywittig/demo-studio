@@ -13,8 +13,16 @@ comes from the JSON. See assets/examples/presenter_guide.example.json for the
 schema by example, and references/presenter-guide-format.md for the field guide.
 """
 import html, json, re, sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                "..", "..", "..", "shared"))
+# shared/ sits beside assets/ in every layout (a symlink in the repo, a copy
+# when a host materialises the skill on its own, possibly under a name such as
+# "demo-studio:presenter-guide"), so look there first and only then at the
+# plugin root, which a flattened install does not have.
+_HERE = os.path.dirname(os.path.realpath(__file__))
+for _shared in (os.path.join(_HERE, "..", "shared"),
+                os.path.join(_HERE, "..", "..", "..", "shared")):
+    if os.path.isfile(os.path.join(_shared, "guardrails.py")):
+        sys.path.insert(0, _shared)
+        break
 import brand
 import guardrails
 import traces as traces_mod

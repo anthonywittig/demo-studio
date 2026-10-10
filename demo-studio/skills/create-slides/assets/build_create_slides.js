@@ -5,14 +5,22 @@
   coordinates, so the flow guide cannot show a different picture than the deck.
 
   node build_create_slides.js            -> create-slides.pptx + slide-previews.json
+
+  Outputs land in the current directory. A copy of this file can live anywhere
+  (a project or scratch directory, so nothing is written into the installed
+  plugin): set CREATE_SLIDES_ASSETS to this skill's assets/ directory and the
+  kit is loaded from there. pptxgenjs is resolved from the current directory
+  first, then from the plugin, so `npm install pptxgenjs` in the working
+  directory is enough when the plugin directory is read-only.
 */
 const fs = require('node:fs');
 const path = require('node:path');
-const pptxgen = require('pptxgenjs');
-const kit = require('./slidekit');
+const ASSETS = process.env.CREATE_SLIDES_ASSETS
+  ? path.resolve(process.env.CREATE_SLIDES_ASSETS) : __dirname;
+const pptxgen = require(require.resolve('pptxgenjs', { paths: [process.cwd(), ASSETS] }));
+const kit = require(path.join(ASSETS, 'slidekit'));
 
-const brand = JSON.parse(fs.readFileSync(
-  path.join(__dirname, '..', '..', '..', 'shared', 'brand.json'), 'utf8'));
+const brand = kit.BRAND;
 const P = brand.surfaces.pptx;
 // brand.json stores hex with a leading '#', pptxgenjs and the slide lint want it
 // without. Normalise once, here, rather than at every call site.
@@ -38,7 +46,7 @@ const slides = [
   // Add one recordSlide block per net-new slide.
 ];
 
-const { lintSlides, formatFindings } = require('./lint_slides');
+const { lintSlides, formatFindings } = require(path.join(ASSETS, 'lint_slides'));
 const findings = lintSlides(slides, palette);
 if (findings.length) {
   console.error(`slide lint failed with ${findings.length} finding(s):`);

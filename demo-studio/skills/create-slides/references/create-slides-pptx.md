@@ -22,7 +22,7 @@ The template authors through `assets/slidekit.js`, not local per-file helpers.
 One call records one slide:
 
 ```js
-const kit = require('./slidekit');
+// the template loads the kit from $CREATE_SLIDES_ASSETS (or its own directory)
 kit.recordSlide({ eyebrow, title, sub }, (k) => {
   k.box(x, y, w, h, opts);      // rich text via opts.rt; opts.fill/line/lw/
                                  // align/valign/margin/color all optional
@@ -44,17 +44,18 @@ additional net-new slide.
 
 ## The visual-QA loop (never skip)
 
-Run these commands from `skills/create-slides/` (this skill's own directory),
-the same working directory the Quickstart in `SKILL.md` uses.
+Run these from the working directory where the deck belongs, with `SKILL`,
+`SHARED`, `CREATE_SLIDES_ASSETS` and `my_slides.js` set up as in the Quickstart
+in `SKILL.md`. Quote every path built from `$SKILL`: its directory may be named
+like `demo-studio:create-slides`.
 
 ```bash
-(cd ../.. && npm install)  # plugin root, once: installs pptxgenjs for every skill
-. shared/pptx_tools.sh
+. "$SHARED/pptx_tools.sh"
 PPTX_SKILL="$(find_pptx_skill)" || exit 1
 render_preflight || echo "proceeding without visual QA, deck is UNVERIFIED"
 
-node assets/build_create_slides.js
-python3 shared/guardrails.py create-slides.pptx
+node my_slides.js
+python3 "$SHARED/guardrails.py" create-slides.pptx
 python3 "$PPTX_SKILL/scripts/office/validate.py" create-slides.pptx
 python3 "$PPTX_SKILL/scripts/office/soffice.py" --headless --convert-to pdf create-slides.pptx
 pdftoppm -jpeg -r 150 create-slides.pdf slide      # then VIEW every slide-N.jpg

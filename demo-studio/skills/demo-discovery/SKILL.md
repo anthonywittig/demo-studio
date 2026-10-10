@@ -21,10 +21,17 @@ the first stage of the pipeline; its output feeds `demo-studio:build-spec` and
 readable `discovery.md`. See `references/discovery-format.md` for the schema
 and `assets/examples/discovery.example.json` for a filled-in record.
 
+Run it from the working directory where the output belongs, not from inside
+the skill. Set `SKILL` to this skill's base directory (the absolute path shown
+when the skill loaded) and keep it quoted: some hosts install plugin skills as
+directories named like `demo-studio:demo-discovery`, and the colon is harmless in a
+quoted absolute path, so there is no need to copy the skill anywhere.
+
 ```bash
-cp assets/examples/discovery.example.json discovery.json
+SKILL="/absolute/path/to/this/skill"   # its base directory, quoted
+cp "$SKILL/assets/examples/discovery.example.json" discovery.json
 # edit discovery.json: signals with ids, demo_fit, session, fork
-python3 assets/build_discovery.py discovery.json discovery.md
+python3 "$SKILL/assets/build_discovery.py" discovery.json discovery.md
 ```
 
 Later stages (`demo-studio:deck-flow-guide`, `demo-studio:presenter-guide`)
